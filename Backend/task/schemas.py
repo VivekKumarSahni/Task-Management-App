@@ -28,3 +28,18 @@ class ShowTask(BaseModel):
 
     #class Config:
         #from_attributes = True
+
+class UserBase(BaseModel):
+    name: str
+    email: str
+    password: str
+    role: str | None = None
+
+class ShowUser(BaseModel):
+    name: str
+    email: str
+    
+class LoginUser(BaseModel):
+    username: str
+    password: str
+    
