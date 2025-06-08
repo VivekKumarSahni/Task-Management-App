@@ -1,7 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from .. import schemas, models, database
+from .. import schemas, models, database, token
 from passlib.context import CryptContext
+from datetime import datetime, timedelta, timezone
+from fastapi.security import OAuth2PasswordRequestForm
+from typing import Annotated
+
+
 
 router = APIRouter(prefix="", tags=["Auth"])
 get_db = database.get_db
@@ -17,15 +22,21 @@ def create_user(request: schemas.UserBase, db: Session = Depends(get_db)):
     return new_user
 
 @router.post("/login")
-def create_user(request: schemas.LoginUser, db: Session = Depends(get_db)):
-    print(request)
+def login_user(request: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)):
+    print(request.username,request.password)
 
     user = db.query(models.User).filter(models.User.email == request.username).first()
-    print(user)
+    print(user.email)
     if not user :
         raise HTTPException(status_code=404,
                             detail=f"Invalid Credentials" )
     if not pwd_context.verify(request.password, user.password):
         raise HTTPException(status_code=404,
                             detail=f"Invalid Credentials" )
-    return user
+    
+    #access_token_expires = timedelta(minutes=token.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = token.create_access_token(
+        data={"sub": user.email})
+    print("hello",access_token)
+    return schemas.Token(access_token=access_token, token_type="bearer")
+

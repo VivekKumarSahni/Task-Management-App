@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from .. import schemas, models, database
+from .. import schemas, models, database, oauth2
 
 router = APIRouter(prefix="/task", tags=["Tasks"])
 get_db = database.get_db
@@ -14,7 +14,7 @@ def create_task(request: schemas.TaskCreate, db: Session = Depends(get_db)):
     return new_task
 
 @router.get("/", response_model=list[schemas.ShowTask])
-def get_all_tasks(db: Session = Depends(get_db)):
+def get_all_tasks(db: Session = Depends(get_db), current_user:schemas.UserBase = Depends(oauth2.get_current_user)):
     return db.query(models.Task).all()
 
 @router.get("/{id}", response_model=schemas.ShowTask)
