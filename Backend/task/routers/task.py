@@ -1,11 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException,  Query
 from sqlalchemy.orm import Session
+from sqlalchemy import asc, desc
 from .. import schemas, models, database, oauth2
 
 router = APIRouter(prefix="/task", tags=["Tasks"])
 get_db = database.get_db
 
-@router.post("/", response_model=schemas.ShowTask)
+#, response_model=schemas.ShowTask
+@router.post("/")
 def create_task(request: schemas.TaskCreate, db: Session = Depends(get_db)):
     new_task = models.Task(**request.dict())
     db.add(new_task)
@@ -13,9 +15,48 @@ def create_task(request: schemas.TaskCreate, db: Session = Depends(get_db)):
     db.refresh(new_task)
     return new_task
 
-@router.get("/", response_model=list[schemas.ShowTask])
-def get_all_tasks(db: Session = Depends(get_db), current_user:schemas.UserBase = Depends(oauth2.get_current_user)):
-    return db.query(models.Task).all()
+# after (get_db), current_user:schemas.UserBase = Depends(oauth2.get_current_user)
+# , response_model=list[schemas.TaskBase]
+# @router.get("/")
+# def get_all_tasks(db: Session = Depends(get_db)):
+#     return db.query(models.Task).all()
+@router.get("/")
+def get_all_tasks(
+    db: Session = Depends(get_db),
+    _page: int = Query(1, alias="_page"),
+    _limit: int = Query(5, alias="_limit"),
+    _sort: str = Query(None, alias="_sort"),
+    _order: str = Query("asc", alias="_order"),
+    status: str = None,
+    priority: str = None,
+):
+    query = db.query(models.Task)
+
+    # Filtering
+    if status:
+        query = query.filter(models.Task.status == status)
+    if priority:
+        query = query.filter(models.Task.priority == priority)
+
+    # Total items before pagination
+    total_items = query.count()
+
+    # Sorting
+    if _sort:
+        sort_column = getattr(models.Task, _sort, None)
+        if sort_column is not None:
+            if _order == "desc":
+                query = query.order_by(desc(sort_column))
+            else:
+                query = query.order_by(asc(sort_column))
+
+    # Pagination
+    tasks = query.offset((_page - 1) * _limit).limit(_limit).all()
+
+    return {
+        "tsks": tasks,
+        "totalItems": total_items
+    }
 
 @router.get("/{id}", response_model=schemas.ShowTask)
 def get_task(id: int, db: Session = Depends(get_db)):
@@ -24,7 +65,7 @@ def get_task(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Task not found")
     return task
 
-@router.put("/{id}", response_model=schemas.ShowTask)
+@router.put("/{id}")
 def update_task(id: int, request: schemas.TaskUpdate, db: Session = Depends(get_db)):
     task = db.query(models.Task).filter(models.Task.id == id).first()
     if not task:

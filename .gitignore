@@ -1,3 +1,8 @@
+node_modules/
+dist/
+.cache/
+
+
 task-env
 __pycache__
 .DS_Store
