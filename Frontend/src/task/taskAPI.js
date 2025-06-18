@@ -59,6 +59,7 @@ export function fetchTasksByFilters(filter = {}, sortBy = "", order = "asc", pag
     console.log(data);
     // const totalItems = response.headers.get('X-Total-Count') || data.length;
     // resolve({ data: { tasks: data, totalItems: +totalItems } });
-    resolve({ data: { tasks: data, totalItems: +totalItems } });
+    // resolve({ data: { tasks: data, totalItems: +totalItems } });
+    resolve({ data });
   });
 }

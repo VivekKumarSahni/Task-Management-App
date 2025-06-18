@@ -10,8 +10,8 @@ import { deleteTaskAsync } from './taskSlice';
 
 const TaskDashboard = () => {
   const dispatch = useDispatch();
-  const taskData = useSelector(selectAllTasks);
-  const tasks = taskData.tsks;
+  const tasks = useSelector(selectAllTasks);
+  // const tasks = taskData.tsks;
 
   const [filters, setFilters] = useState({ status: "", priority: "" });
   const [sortOrder, setSortOrder] = useState("asc");
@@ -66,7 +66,7 @@ const TaskDashboard = () => {
   // Pagination logic
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
-  console.log(taskData);
+  // console.log(taskData);
   console.log(tasks);
   const currentTasks = tasks.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(tasks.length / itemsPerPage);

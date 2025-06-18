@@ -54,7 +54,7 @@ def get_all_tasks(
     tasks = query.offset((_page - 1) * _limit).limit(_limit).all()
 
     return {
-        "tsks": tasks,
+        "tasks": tasks,
         "totalItems": total_items
     }
 
