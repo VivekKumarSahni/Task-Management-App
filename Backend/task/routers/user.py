@@ -12,6 +12,12 @@ router = APIRouter(prefix="", tags=["Auth"])
 get_db = database.get_db
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
+@router.get("/users")
+def get_all_users(db: Session = Depends(get_db)):
+    return db.query(models.User).all() 
+
+
 @router.post("/register", response_model=schemas.ShowUser)
 def create_user(request: schemas.UserBase, db: Session = Depends(get_db)):
     request.password = pwd_context.hash(request.password)

@@ -9,7 +9,7 @@ get_db = database.get_db
 #, response_model=schemas.ShowTask
 @router.post("/")
 def create_task(request: schemas.TaskCreate, db: Session = Depends(get_db)):
-    new_task = models.Task(**request.dict())
+    new_task = models.Task(**request.model_dump())
     db.add(new_task)
     db.commit()
     db.refresh(new_task)

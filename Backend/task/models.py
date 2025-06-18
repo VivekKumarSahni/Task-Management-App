@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, String, Date
-from .database import Base
+from sqlalchemy.ext.declarative import declarative_base
 
 # Existing models...
+Base = declarative_base()
 
 class Task(Base):
     __tablename__ = 'tasks'

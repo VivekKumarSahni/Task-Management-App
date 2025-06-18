@@ -30,13 +30,13 @@ class ShowTask(BaseModel):
         #from_attributes = True
 
 class UserBase(BaseModel):
-    name: str
+    user: str
     email: str
     password: str
     role: str | None = None
 
 class ShowUser(BaseModel):
-    name: str
+    user: str
     email: str
     
 class LoginUser(BaseModel):
