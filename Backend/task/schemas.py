@@ -19,6 +19,7 @@ class TaskUpdate(BaseModel):
     status: str | None = None
     due_date: date | None = None
     priority: str | None = None
+    user_id: int | None = None
 
 class ShowTask(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -30,13 +31,13 @@ class ShowTask(BaseModel):
         #from_attributes = True
 
 class UserBase(BaseModel):
-    user: str
+    name: str
     email: str
     password: str
     role: str | None = None
 
 class ShowUser(BaseModel):
-    user: str
+    name: str
     email: str
     
 class LoginUser(BaseModel):

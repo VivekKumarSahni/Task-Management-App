@@ -8,21 +8,35 @@ import {
 import './App.css'
 import {store} from './app/store';
 import Login from './auth/Components/Login';
+import SignUp from './auth/Components/SignUp';
 import { Provider } from "react-redux";
 import TaskDashboard from './task/task';
+import TaskAssignment from './task/assigntask';
 
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: '/login',
     element: (
       <Login></Login>
     ),
   },
   {
+    path: '/signup',
+    element: (
+      <SignUp></SignUp>  
+  ),
+  },
+  {
     path: '/task',
     element: (
       <TaskDashboard></TaskDashboard>
+    ),
+  },
+  {
+    path: '/assign-task',
+    element: (
+      <TaskAssignment></TaskAssignment>
     ),
   },
   // {
