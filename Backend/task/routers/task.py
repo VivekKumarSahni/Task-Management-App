@@ -2,17 +2,20 @@ from fastapi import APIRouter, Depends, HTTPException,  Query
 from sqlalchemy.orm import Session
 from sqlalchemy import asc, desc
 from .. import schemas, models, database, oauth2
+from .log import log_action
 
 router = APIRouter(prefix="/task", tags=["Tasks"])
 get_db = database.get_db
 
 #, response_model=schemas.ShowTask
-@router.post("/")
+@router.post("/", response_model=schemas.ShowTask)
 def create_task(request: schemas.TaskCreate, db: Session = Depends(get_db)):
     new_task = models.Task(**request.model_dump())
+
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
+    log_action(db, new_task.user_id, "create",  new_task.id, new_task.title,f"Task titled '{new_task.title}' created.")
     return new_task
 
 # after (get_db), current_user:schemas.UserBase = Depends(oauth2.get_current_user)
@@ -76,6 +79,7 @@ def update_task(id: int, request: schemas.TaskUpdate, db: Session = Depends(get_
     
     db.commit()
     db.refresh(task)
+    log_action(db, task.user_id, "update", task.id,task.title, f"Task titled '{task.title}' updated.")
     return task
 
 @router.delete("/{id}")
@@ -83,6 +87,8 @@ def delete_task(id: int, db: Session = Depends(get_db)):
     task = db.query(models.Task).filter(models.Task.id == id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
+    log_action(db, task.user_id, "delete",  task.id,task.title, f"Task titled '{task.title}' deleted.")
+
     db.delete(task)
     db.commit()
     return {"detail": "Task deleted"}

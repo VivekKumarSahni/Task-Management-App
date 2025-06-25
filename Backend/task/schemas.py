@@ -1,5 +1,5 @@
 from pydantic import BaseModel,ConfigDict
-from datetime import date
+from datetime import date, datetime
 
 # Existing schemas...
 
@@ -9,6 +9,8 @@ class TaskBase(BaseModel):
     status: str
     due_date: date
     priority: str
+    user_id: int | None = None
+
 
 class TaskCreate(TaskBase):
     pass
@@ -26,6 +28,11 @@ class ShowTask(BaseModel):
 
     id: int
     title: str
+    description: str
+    status: str
+    due_date: date
+    priority: str
+    user_id: int | None = None
 
     #class Config:
         #from_attributes = True
@@ -51,3 +58,15 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: str | None = None
+
+
+class AuditLog(BaseModel):
+    id: int
+    action: str
+    entity: str
+    entity_id: int
+    user_id: int | None = None
+    timestamp: datetime
+    details: str
+
+

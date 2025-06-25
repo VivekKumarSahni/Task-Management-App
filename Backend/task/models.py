@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -26,3 +26,16 @@ class User(Base):
     password = Column(String(255))          
     role = Column(String(50))             
     tasks = relationship('Task', back_populates="user")
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    action = Column(String(100))  
+    task_id = Column(Integer)  
+    title = Column(String(50)) 
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    timestamp = Column(DateTime)
+    details = Column(String(500)) 
+
+    user = relationship("User")
