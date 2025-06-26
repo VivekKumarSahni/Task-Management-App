@@ -12,6 +12,7 @@ import SignUp from './auth/Components/SignUp';
 import { Provider } from "react-redux";
 import TaskDashboard from './task/task';
 import TaskAssignment from './task/assigntask';
+import AuditLogTable from './auditlog/log';
 
 
 const router = createBrowserRouter([
@@ -37,6 +38,12 @@ const router = createBrowserRouter([
     path: '/assign-task',
     element: (
       <TaskAssignment></TaskAssignment>
+    ),
+  },
+  {
+    path: '/logs',
+    element: (
+      <AuditLogTable></AuditLogTable>
     ),
   },
   // {

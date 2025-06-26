@@ -7,6 +7,7 @@ export function createTask(task) {
       headers: { 'content-type': 'application/json' }
     });
     const data = await response.json();
+    // console.log(data);
     resolve({ data });
   });
 }
