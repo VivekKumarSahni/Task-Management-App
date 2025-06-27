@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import TaskDashboard from './task/task';
 import TaskAssignment from './task/assigntask';
 import AuditLogTable from './auditlog/log';
+import SidebarLayout from './Components/SidebarLayout';
 
 
 const router = createBrowserRouter([
@@ -31,19 +32,25 @@ const router = createBrowserRouter([
   {
     path: '/task',
     element: (
-      <TaskDashboard></TaskDashboard>
+      <SidebarLayout>
+        <TaskDashboard />
+      </SidebarLayout>
     ),
   },
   {
     path: '/assign-task',
     element: (
-      <TaskAssignment></TaskAssignment>
+       <SidebarLayout>
+        <TaskAssignment />
+      </SidebarLayout>
     ),
   },
   {
     path: '/logs',
     element: (
-      <AuditLogTable></AuditLogTable>
+      <SidebarLayout>
+        <AuditLogTable />
+      </SidebarLayout>
     ),
   },
   // {
